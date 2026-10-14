@@ -1,0 +1,86 @@
+{
+    "name": "higgsfield-motion-studio-pro",
+    "label": "Higgsfield Motion Studio Pro",
+    "description": "AI-powered motion transfer studio - Transform static images into dynamic videos",
+    "longDescription": "A professional AI-powered motion transfer studio built with React and TypeScript. Upload any image and a reference video, and the app uses Kling AI to apply the motion to your image, creating stunning dynamic videos. Features complete authentication, generation history, cloud storage, and advanced controls for motion strength, duration, quality, and aspect ratio.",
+    "category": "ai-tools",
+    "tags": [
+        "react",
+        "typescript",
+        "ai",
+        "video",
+        "kling-ai",
+        "motion-transfer",
+        "supabase",
+        "vite"
+    ],
+    "icon": "i-ph:video-camera",
+    "preview_image": "preview.png",
+    "author": "Rax.diy Team",
+    "license": "MIT",
+    "demo_url": "",
+    "features": [
+        "AI motion transfer using Kling AI API",
+        "Complete authentication with Email, Google, and GitHub OAuth",
+        "Generation history with cloud storage via Supabase",
+        "Advanced motion controls (strength, duration, quality, aspect ratio)",
+        "Real-time progress tracking during generation",
+        "User profiles with per-user API key support",
+        "Dark/light theme support",
+        "Responsive design for mobile and desktop"
+    ],
+    "tech_stack": [
+        "React 18",
+        "TypeScript",
+        "Vite",
+        "Tailwind CSS",
+        "shadcn/ui",
+        "Framer Motion",
+        "Supabase (Auth + DB + Storage)",
+        "Kling AI API",
+        "Express.js (local proxy)",
+        "Vercel Serverless Functions"
+    ],
+    "env_vars": [
+        {
+            "key": "VITE_KLING_ACCESS_KEY",
+            "label": "Kling AI Access Key",
+            "description": "Your Kling AI API access key from klingai.com",
+            "required": true,
+            "type": "password",
+            "placeholder": "your_kling_access_key_here"
+        },
+        {
+            "key": "VITE_KLING_SECRET_KEY",
+            "label": "Kling AI Secret Key",
+            "description": "Your Kling AI API secret key from klingai.com",
+            "required": true,
+            "type": "password",
+            "placeholder": "your_kling_secret_key_here"
+        },
+        {
+            "key": "VITE_KLING_API_BASE_URL",
+            "label": "Kling API Base URL",
+            "description": "API base URL — use http://localhost:3001/api/v1 for local dev, /api/kling for production",
+            "required": true,
+            "type": "url",
+            "placeholder": "/api/kling"
+        },
+        {
+            "key": "VITE_SUPABASE_URL",
+            "label": "Supabase Project URL",
+            "description": "Your Supabase project URL from Settings → API",
+            "required": true,
+            "type": "url",
+            "placeholder": "https://your-project-id.supabase.co"
+        },
+        {
+            "key": "VITE_SUPABASE_ANON_KEY",
+            "label": "Supabase Anon Key",
+            "description": "Your Supabase anonymous/public API key",
+            "required": true,
+            "type": "password",
+            "placeholder": "your_supabase_anon_key_here"
+        }
+    ]
+}

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motion Studio Pro - Get Started</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #1a202c;
+        }
+        /* Document Container */
+        .doc-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            min-height: 100vh;
+        }
+        /* Teal selection color */
+        ::selection {
+            background: #ccfbf1;
+            color: #134e4a;
+        }
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="doc-wrapper prose prose-slate prose-lg lg:prose-xl">
+        
+        <header class="border-b border-gray-200 pb-8 mb-12 not-prose">
+            <p class="text-sm font-mono text-teal-600 mb-2 tracking-widest uppercase">MOTION_STUDIO_V1.0</p>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Get Started in 10 Minutes</h1>
+            <p class="text-xl text-gray-500 font-light leading-relaxed">
+                The fastest way to get Motion Studio Pro running on your own infrastructure. Transform static images into dynamic videos with AI.
+            </p>
+        </header>
+
+        <div class="bg-gray-50 p-6 rounded-lg mb-12 border border-gray-100 not-prose">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">Setup Steps</h4>
+            <ul class="space-y-2 text-sm text-gray-700 font-medium">
+                <li><a href="#prerequisites" class="hover:text-teal-600 hover:underline transition-colors">Prerequisites</a></li>
+                <li><a href="#step-1" class="hover:text-teal-600 hover:underline transition-colors">1. Clone & Install (2 minutes)</a></li>
+                <li><a href="#step-2" class="hover:text-teal-600 hover:underline transition-colors">2. Get API Keys (3 minutes)</a></li>
+                <li><a href="#step-3" class="hover:text-teal-600 hover:underline transition-colors">3. Configure Environment (1 minute)</a></li>
+                <li><a href="#step-4" class="hover:text-teal-600 hover:underline transition-colors">4. Setup Database (3 minutes)</a></li>
+                <li><a href="#step-5" class="hover:text-teal-600 hover:underline transition-colors">5. Run Locally (1 minute)</a></li>
+                <li><a href="#troubleshooting" class="hover:text-teal-600 hover:underline transition-colors">Troubleshooting</a></li>
+            </ul>
+        </div>
+
+        <section id="prerequisites">
+            <h2>Prerequisites</h2>
+            <p>
+                Before you begin, ensure you have the following installed on your system:
+            </p>
+            <ul>
+                <li><strong>Node.js 18+</strong> - Download from <a href="https://nodejs.org" class="text-teal-600 hover:underline">nodejs.org</a></li>
+                <li><strong>Code Editor</strong> - VS Code recommended</li>
+                <li><strong>10 minutes</strong> - That's all the time you need!</li>
+            </ul>
+        </section>
+
+        <section id="step-1">
+            <h2>Step 1: Clone & Install</h2>
+            <p class="text-gray-600 italic">Estimated time: 2 minutes</p>
+            
+            <p>Open your terminal and run the following commands:</p>
+
+            <div class="bg-gray-900 text-gray-200 p-6 rounded-md font-mono text-sm not-prose my-6 overflow-x-auto">
+                <div class="text-gray-400 mb-2"># Clone the repository</div>
+                <div class="text-teal-400">git clone</div> https://github.com/yourusername/motion-studio-pro.git<br>
+                <br>
+                <div class="text-gray-400"># Navigate to the project</div>
+                <div class="text-teal-400">cd</div> motion-studio-pro<br>
+                <br>
+                <div class="text-gray-400"># Install dependencies</div>
+                <div class="text-teal-400">npm install</div>
+            </div>
+
+            <div class="bg-teal-50 border-l-4 border-teal-500 p-4 not-prose my-6">
+                <p class="text-teal-900 text-sm m-0">
+                    ⏱️ <strong>Tip:</strong> While dependencies install (~2 minutes), continue to the next step to get your API keys ready.
+                </p>
+            </div>
+        </section>
+
+        <section id="step-2">
+            <h2>Step 2: Get API Keys</h2>
+            <p class="text-gray-600 italic">Estimated time: 3 minutes</p>
+            
+            <p>
+                Motion Studio Pro requires API keys from two services to function. Both offer free tiers to get started.
+            </p>
+
+            <h3>Kling AI API Keys</h3>
+            <p>Kling AI powers the actual video generation. Here's how to get your credentials:</p>
+            <ol>
+                <li>Go to <a href="https://klingai.com" class="text-teal-600 hover:underline" target="_blank">klingai.com</a></li>
+                <li>Sign up for an account</li>
+                <li>Navigate to <strong>API Settings</strong></li>
+                <li>Copy your <strong>Access Key</strong> and <strong>Secret Key</strong></li>
+            </ol>
+
+            <div class="bg-gray-900 text-gray-200 p-4 rounded-md font-mono text-xs not-prose my-6">
+                Access Key: <span class="text-teal-400">A4LDgYpYANAHfTbRHmLKFtR4DyhKHemM</span><br>
+                Secret Key: <span class="text-teal-400">nHAyDQCpECJmgD8QBNrfJGY9PpYbR44P</span>
+            </div>
+
+            <h3>Supabase Credentials</h3>
+            <p>Supabase provides authentication, database, and file storage:</p>
+            <ol>
+                <li>Go to <a href="https://supabase.com" class="text-teal-600 hover:underline" target="_blank">supabase.com</a></li>
+                <li>Click <strong>New Project</strong> (free tier is fine)</li>
+                <li>Wait ~2 minutes for setup</li>
+                <li>Go to <strong>Settings</strong> → <strong>API</strong></li>
+                <li>Copy your <strong>Project URL</strong> and <strong>anon/public key</strong></li>
+            </ol>
+
+            <blockquote>
+                <p><strong>Cost Note:</strong> Kling AI charges per generation (~$0.05-$0.20). Supabase free tier is generous for testing.</p>
+            </blockquote>
+        </section>
+
+        <section id="step-3">
+            <h2>Step 3: Configure Environment</h2>
+            <p class="text-gray-600 italic">Estimated time: 1 minute</p>
+            
+            <p>Create your environment configuration file:</p>
+
+            <div class="bg-gray-900 text-gray-200 p-6 rounded-md font-mono text-sm not-prose my-6 overflow-x-auto">
+                <div class="text-gray-400 mb-2"># Copy the example file</div>
+                <div class="text-teal-400">cp</div> .env.example .env
+            </div>
+
+            <p>Open <code>.env</code> in your editor and fill in your credentials:</p>
+
+            <div class="bg-gray-900 text-gray-200 p-6 rounded-md font-mono text-xs not-prose my-6 overflow-x-auto">
+                <div class="text-gray-400"># Kling AI Configuration</div>
+                VITE_KLING_ACCESS_KEY=<span class="text-yellow-400">paste_your_kling_access_key</span><br>
+                VITE_KLING_SECRET_KEY=<span class="text-yellow-400">paste_your_kling_secret_key</span><br>
+                VITE_KLING_API_BASE_URL=<span class="text-green-400">/api/kling</span><br>
+                <br>
+                <div class="text-gray-400"># Supabase Configuration</div>
+                VITE_SUPABASE_URL=<span class="text-yellow-400">paste_your_supabase_url</span><br>
+                VITE_SUPABASE_ANON_KEY=<span class="text-yellow-400">paste_your_supabase_anon_key</span>
+            </div>
+
+            <div class="bg-orange-50 border-l-4 border-orange-500 p-4 not-prose my-6">
+                <p class="text-orange-900 text-sm m-0">
+                    ⚠️ <strong>Security:</strong> Never commit your <code>.env</code> file to version control! It's already in <code>.gitignore</code>.
+                </p>
+            </div>
+        </section>
+
+        <section id="step-4">
+            <h2>Step 4: Setup Database</h2>
+            <p class="text-gray-600 italic">Estimated time: 3 minutes</p>
+            
+            <p>Initialize your Supabase database with the required tables and storage:</p>
+
+            <h3>Run Database Migrations</h3>
+            <ol>
+                <li>Go to your Supabase project dashboard</li>
+                <li>Click <strong>SQL Editor</strong> in the sidebar</li>
+                <li>Click <strong>New Query</strong></li>
+                <li>Copy the contents of <code>supabase/migrations/20260131_initial_schema.sql</code></li>
+                <li>Paste and click <strong>Run</strong></li>
+                <li>Create another query with <code>supabase/migrations/20260131_create_storage_buckets.sql</code></li>
+                <li>Click <strong>Run</strong></li>
+            </ol>
+
+            <h3>Verify Setup</h3>
+            <div class="bg-gray-50 border border-gray-200 p-4 rounded-md not-prose my-6">
+                <p class="text-sm text-gray-700 mb-2"><strong>Check Tables:</strong></p>
+                <ul class="text-sm text-gray-600 space-y-1 ml-4">
+                    <li>Go to <strong>Table Editor</strong></li>
+                    <li>✅ You should see <code>generations</code> and <code>user_settings</code> tables</li>
+                </ul>
+                <p class="text-sm text-gray-700 mb-2 mt-4"><strong>Check Storage:</strong></p>
+                <ul class="text-sm text-gray-600 space-y-1 ml-4">
+                    <li>Go to <strong>Storage</strong></li>
+                    <li>✅ You should see <code>uploads</code> and <code>results</code> buckets</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="step-5">
+            <h2>Step 5: Run Locally</h2>
+            <p class="text-gray-600 italic">Estimated time: 1 minute</p>
+            
+            <p>You have two options for running the app locally:</p>
+
+            <h3>Option A: Development Mode (Recommended)</h3>
+            <p>Use this for testing with the local proxy server:</p>
+
+            <div class="bg-gray-900 text-gray-200 p-6 rounded-md font-mono text-sm not-prose my-6 overflow-x-auto">
+                <div class="text-gray-400 mb-2"># Terminal 1 - Start proxy server</div>
+                <div class="text-teal-400">node</div> server.js<br>
+                <br>
+                <div class="text-gray-400"># Terminal 2 - Start the app</div>
+                <div class="text-teal-400">npm run</div> dev
+            </div>
+
+            <p>Update your <code>.env</code>:</p>
+            <div class="bg-gray-900 text-gray-200 p-4 rounded-md font-mono text-xs not-prose my-6">
+                VITE_KLING_API_BASE_URL=<span class="text-green-400">http://localhost:3001/api/v1</span>
+            </div>
+
+            <h3>Option B: Production-Like Mode</h3>
+            <p>Test how it will work in production:</p>
+
+            <div class="bg-gray-900 text-gray-200 p-6 rounded-md font-mono text-sm not-prose my-6">
+                <div class="text-teal-400">npm run</div> dev
+            </div>
+
+            <p>Make sure your <code>.env</code> has:</p>
+            <div class="bg-gray-900 text-gray-200 p-4 rounded-md font-mono text-xs not-prose my-6">
+                VITE_KLING_API_BASE_URL=<span class="text-green-400">/api/kling</span>
+            </div>
+
+            <div class="bg-teal-50 border-l-4 border-teal-500 p-4 not-prose my-6">
+                <p class="text-teal-900 text-sm m-0">
+                    🎉 <strong>Success!</strong> Open <a href="http://localhost:5173" class="underline hover:text-teal-700">http://localhost:5173</a> to see your app!
+                </p>
+            </div>
+        </section>
+
+        <section id="test">
+            <h2>Step 6: Test It Out! 🎉</h2>
+            
+            <p>Let's verify everything is working:</p>
+
+            <ol>
+                <li>Click <strong>Sign Up</strong> → Create an account</li>
+                <li>Upload a <strong>reference image</strong></li>
+                <li>Upload a <strong>motion video</strong></li>
+                <li>Click <strong>Generate Video</strong></li>
+                <li>Watch the magic happen! ✨</li>
+            </ol>
+
+            <div class="bg-green-50 border-l-4 border-green-500 p-4 not-prose my-6">
+                <p class="text-green-900 text-sm m-0">
+                    ✅ <strong>Congratulations!</strong> You're now running your own AI-powered motion transfer studio. Time to start creating!
+                </p>
+            </div>
+        </section>
+
+        <section id="next-steps">
+            <h2>What's Next?</h2>
+            
+            <h3>For Local Development</h3>
+            <ul>
+                <li>You're all set! Keep coding.</li>
+                <li>The app hot-reloads when you make changes.</li>
+                <li>Check out <code>src/</code> to customize components.</li>
+            </ul>
+
+            <h3>For Production Deployment</h3>
+            <ul>
+                <li>Read <code>docs/DEPLOYMENT.md</code> for Vercel, Railway, etc.</li>
+                <li>Add environment variables to your hosting platform.</li>
+                <li>Deploy and share your app with the world!</li>
+            </ul>
+
+            <h3>For Commercialization</h3>
+            <ul>
+                <li>Read <code>COMMERCIALIZATION.md</code> to learn how to sell this.</li>
+                <li>Add payment integration (Stripe recommended).</li>
+                <li>Customize branding and pricing.</li>
+                <li>Launch your business! 🚀</li>
+            </ul>
+        </section>
+
+        <section id="troubleshooting">
+            <h2>Troubleshooting</h2>
+            
+            <h3>"Network Error" when generating</h3>
+            <ul>
+                <li>Make sure the proxy server is running (<code>node server.js</code>)</li>
+                <li>Check that <code>VITE_KLING_API_BASE_URL</code> matches your setup</li>
+                <li>Verify your Kling AI credentials are correct (32 characters each)</li>
+            </ul>
+
+            <h3>"Authentication Error"</h3>
+            <ul>
+                <li>Check your Supabase URL and anon key</li>
+                <li>Make sure the database migrations ran successfully</li>
+                <li>Try signing out and back in</li>
+            </ul>
+
+            <h3>"Storage Error"</h3>
+            <ul>
+                <li>Verify the storage buckets exist in Supabase</li>
+                <li>Make sure both buckets are set to <strong>Public</strong></li>
+                <li>Check bucket permissions in Supabase Storage settings</li>
+            </ul>
+
+            <h3>Still Stuck?</h3>
+            <div class="bg-gray-50 border border-gray-200 p-4 rounded-md not-prose my-6">
+                <p class="text-sm text-gray-700 mb-2"><strong>Resources:</strong></p>
+                <ul class="text-sm text-gray-600 space-y-1 ml-4">
+                    <li>📖 Check the <a href="docs/SETUP-GUIDE.md" class="text-teal-600 hover:underline">full setup guide</a></li>
+                    <li>🐛 Open an issue on GitHub</li>
+                    <li>💬 Review error messages in browser console (F12)</li>
+                    <li>📝 Check Vercel function logs if deployed</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="quick-commands">
+            <h2>Quick Commands Reference</h2>
+            
+            <div class="bg-gray-900 text-gray-200 p-6 rounded-md font-mono text-sm not-prose my-6 overflow-x-auto">
+                <div class="text-gray-400"># Install dependencies</div>
+                npm install<br><br>
+                
+                <div class="text-gray-400"># Development mode</div>
+                npm run dev<br><br>
+                
+                <div class="text-gray-400"># Build for production</div>
+                npm run build<br><br>
+                
+                <div class="text-gray-400"># Preview production build</div>
+                npm run preview<br><br>
+                
+                <div class="text-gray-400"># Start proxy server (local dev)</div>
+                node server.js<br><br>
+                
+                <div class="text-gray-400"># Lint code</div>
+                npm run lint
+            </div>
+        </section>
+
+        <hr class="my-12 border-gray-200" />
+
+        <footer class="text-sm text-gray-500 font-mono flex flex-col md:flex-row justify-between">
+            <p>Motion Studio Pro &bull; Open Source MIT License</p>
+            <p class="mt-2 md:mt-0">
+                <a href="COMMERCIALIZATION.md" class="hover:text-teal-600 underline mr-4">Sell This Product</a>
+                <a href="docs/DEPLOYMENT.md" class="hover:text-teal-600 underline">Deploy Guide</a>
+            </p>
+        </footer>
+
+    </div>
+</body>
+</html>
