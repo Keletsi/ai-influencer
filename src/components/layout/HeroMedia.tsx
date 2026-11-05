@@ -77,14 +77,14 @@ export const HeroBackdrop = () => {
 
 const SOURCE_LABELS = [
   { src: "/banner/wan-hero.mp4", poster: "/banner/wan-hero.jpg", label: "Alibaba Wan 3.0 Prime" },
-  { src: "/banner/hailuo-sample.mp4", poster: "/banner/hailuo-sample.jpg", label: "MiniMax Hailuo 3 Max" },
+  { src: "/banner/keth-sample.mp4", poster: "/banner/keth-sample.jpg", label: "Performance clip" },
 ];
 
 /**
- * Hero showcase card: the portrait Hailuo render in a contained frame that
- * advertises the exact model behind it (paired with a thumbnail of the Wan
- * clip). Both layers are lazy-mounted so the card adds nothing to first paint
- * until the viewport is ~1 MB of video behind on bandwidth.
+ * Hero showcase card: the performance clip that drives motion, in a contained
+ * frame that also credits the model behind the backdrop. Both layers are
+ * lazy-mounted so the card adds nothing to first paint until the viewport is
+ * ~1.2 MB of video behind on bandwidth.
  */
 export const SampleShowcase = () => {
   const motionOk = useEnhancedMedia();
@@ -101,13 +101,13 @@ export const SampleShowcase = () => {
             loop
             playsInline
             preload="metadata"
-            className="aspect-[9/16] h-full w-full object-cover"
+            className="aspect-[4/5] h-full w-full object-cover"
           />
         ) : (
           <img
             src={SOURCE_LABELS[1].poster}
-            alt="Example AI influencer render"
-            className="aspect-[9/16] h-full w-full object-cover"
+            alt="Performance clip sample"
+            className="aspect-[4/5] h-full w-full object-cover"
           />
         )}
       </div>
@@ -115,10 +115,10 @@ export const SampleShowcase = () => {
       <figcaption className="mt-3 space-y-2">
         <p className="flex items-center justify-center gap-1.5 text-xs font-medium text-secondary-foreground">
           <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-          Rendered with {SOURCE_LABELS[1].label}
+          Performance clip drives the motion
         </p>
         <p className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
-          Also supported: {SOURCE_LABELS[0].label}
+          Backdrop rendered by {SOURCE_LABELS[0].label}
         </p>
       </figcaption>
     </figure>
