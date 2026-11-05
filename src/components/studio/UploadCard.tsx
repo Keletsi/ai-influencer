@@ -34,6 +34,8 @@ export const UploadCard = ({
 }: UploadCardProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [localPreview, setLocalPreview] = useState<string | null>(null);
+  /** Name/size of a just-selected file, so freshly uploaded media shows its identity. */
+  const [localMeta, setLocalMeta] = useState<{ name: string; size: number } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -44,10 +46,11 @@ export const UploadCard = ({
     return () => URL.revokeObjectURL(localPreview);
   }, [localPreview]);
 
-  // Restored files have no File object, so playback is disabled for them.
+  // previewUrl is built from the real File restored out of IndexedDB, so it is
+  // just as playable as a freshly selected one.
   const preview = localPreview ?? previewUrl;
-  const hasPlayableFile = localPreview !== null;
-  const sizeBytes = localPreview ? null : fileMeta?.size ?? null;
+  const displayedName = localMeta?.name ?? fileMeta?.name ?? null;
+  const sizeBytes = localMeta?.size ?? fileMeta?.size ?? null;
 
   const acceptedTypes =
     type === "image"
@@ -58,7 +61,7 @@ export const UploadCard = ({
 
   const handleVideoHover = useCallback(
     (isHovering: boolean) => {
-      if (!videoRef.current || !hasPlayableFile) return;
+      if (!videoRef.current) return;
       if (isHovering) {
         videoRef.current.play().catch(() => {
           // Ignore autoplay errors before the user interacts
@@ -68,7 +71,7 @@ export const UploadCard = ({
         videoRef.current.currentTime = 0;
       }
     },
-    [hasPlayableFile]
+    []
   );
 
   const processFile = useCallback(
@@ -89,6 +92,7 @@ export const UploadCard = ({
       }
 
       setLocalPreview(URL.createObjectURL(selectedFile));
+      setLocalMeta({ name: selectedFile.name, size: selectedFile.size });
       onFileSelect?.(selectedFile);
     },
     [type, maxSize, onFileSelect]
@@ -123,6 +127,7 @@ export const UploadCard = ({
 
   const handleRemove = () => {
     setLocalPreview(null);
+    setLocalMeta(null);
     onFileSelect?.(null);
   };
 
@@ -225,20 +230,18 @@ export const UploadCard = ({
               alt="Influencer portrait"
               className="h-full w-full object-cover"
             />
-          ) : hasPlayableFile ? (
+          ) : (
+            // Plays whether the file came from the picker, a drop, or was
+            // restored out of IndexedDB - previewUrl is always a live blob.
             <video
               ref={videoRef}
               src={preview}
               className="h-full w-full object-cover"
+              autoPlay
               loop
               muted
               playsInline
             />
-          ) : (
-            // Restored from IndexedDB: no File handle to stream, show the still
-            <div className="flex h-full w-full items-center justify-center">
-              <Video className="h-8 w-8 text-muted-foreground" />
-            </div>
           )}
 
           {/* Hover actions - solid, not frosted */}
@@ -269,6 +272,17 @@ export const UploadCard = ({
               {type === "image" ? "Portrait" : "Performance"}
             </span>
           </div>
+
+          {displayedName && (
+            <div className="absolute bottom-3 left-3 min-w-0 max-w-[65%]">
+              <span
+                title={displayedName}
+                className="block truncate rounded-md bg-foreground/80 px-2 py-1 font-mono text-[11px] text-background"
+              >
+                {displayedName}
+              </span>
+            </div>
+          )}
 
           {sizeBytes !== null && (
             <div className="absolute bottom-3 right-3">
