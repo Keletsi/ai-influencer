@@ -1,79 +1,45 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Recursive:CASL,CRSV,MONO,wght@0..1,0..1,0..1,300..800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * AI-influencer theme: blue and white only.
+ * A single light palette - no dark mode, no glassmorphism, no neon.
+ */
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
+    /* Brand blue */
+    --primary: 221 83% 47%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+    --secondary: 214 100% 97%;
+    --secondary-foreground: 221 83% 40%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted: 214 32% 96%;
+    --muted-foreground: 215 20% 45%;
 
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --accent: 214 100% 95%;
+    --accent-foreground: 221 83% 40%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 47%;
 
-    --radius: 1rem; /* Increased radius for Apple look */
-
-    /* Custom Apple-style tokens */
-    --glass-border: 0 0% 100% / 0.2;
-    --glass-bg: 0 0% 100% / 0.7;
-    --sidebar-bg: 0 0% 98% / 0.8;
-  }
-
-  .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    
-    --glass-border: 0 0% 100% / 0.1;
-    --glass-bg: 240 10% 3.9% / 0.7;
-    --sidebar-bg: 240 10% 3.9% / 0.8;
+    --radius: 0.75rem;
   }
 }
 
@@ -84,28 +50,54 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    /* Recursive: the app's identity font. Linear by default (CASL 0), so the
+       UI stays crisp while the variable axes stay available for accents. */
+    font-family: 'Recursive', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      Roboto, Helvetica, Arial, sans-serif;
+    font-optical-sizing: auto;
+    font-variation-settings: 'CASL' 0, 'CRSV' 0, 'MONO' 0;
+  }
+
+  /* Job IDs and technical values use Recursive's monospace axis, giving
+     numbers and ids even widths without shipping a second font family. */
+  code,
+  pre,
+  kbd,
+  .font-mono {
+    font-variation-settings: 'CASL' 0, 'CRSV' 0, 'MONO' 1;
+    letter-spacing: 0.01em;
+  }
+
+  /* Headings get a touch of the casual axis - Recursive's signature look. */
+  h1,
+  h2,
+  h3 {
+    font-variation-settings: 'CASL' 0.4, 'CRSV' 0, 'MONO' 0;
+    letter-spacing: -0.01em;
+  }
+
+  /* Blue text selection, matching the brand */
+  ::selection {
+    background: hsl(var(--primary) / 0.15);
+    color: hsl(var(--foreground));
   }
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-background/80 backdrop-blur-md border border-border/50;
-  }
-  
-  .glass-panel {
-    @apply bg-card/60 backdrop-blur-xl border border-white/20 shadow-sm;
+  /* Flat white surface used for every panel, replacing glass effects */
+  .surface {
+    @apply bg-card border border-border rounded-xl;
   }
 
-  .apple-button {
-    @apply transition-all duration-200 active:scale-95;
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -113,15 +105,16 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted));
-  border-radius: 3px;
+  background: hsl(var(--border));
+  border-radius: 999px;
+  border: 2px solid hsl(var(--background));
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground));
+  background: hsl(var(--primary) / 0.4);
 }
 
-/* Skeleton animation */
+/* Progress placeholder used while a render is running */
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -135,7 +128,7 @@
   background: linear-gradient(
     90deg,
     hsl(var(--muted)) 25%,
-    hsl(var(--muted-foreground) / 0.1) 50%,
+    hsl(var(--secondary)) 50%,
     hsl(var(--muted)) 75%
   );
   background-size: 200% 100%;

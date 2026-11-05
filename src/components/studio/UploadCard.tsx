@@ -1,9 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { Upload, Image, Video, X, RefreshCw } from "lucide-react";
+import { Upload, Image as ImageIcon, Video, X, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { SparklesCore } from "@/components/ui/sparkles";
-import { useTheme } from "next-themes";
 import type { StoredFileMeta } from "@/services/local-storage";
 
 interface UploadCardProps {
@@ -38,7 +36,6 @@ export const UploadCard = ({
   const [localPreview, setLocalPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { theme } = useTheme();
 
   // The object URL created here must be released, otherwise every re-select
   // leaks the whole file in memory.
@@ -50,9 +47,7 @@ export const UploadCard = ({
   // Restored files have no File object, so playback is disabled for them.
   const preview = localPreview ?? previewUrl;
   const hasPlayableFile = localPreview !== null;
-  const sizeBytes = localPreview
-    ? null
-    : fileMeta?.size ?? null;
+  const sizeBytes = localPreview ? null : fileMeta?.size ?? null;
 
   const acceptedTypes =
     type === "image"
@@ -131,7 +126,7 @@ export const UploadCard = ({
     onFileSelect?.(null);
   };
 
-  const Icon = type === "image" ? Image : Video;
+  const Icon = type === "image" ? ImageIcon : Video;
 
   const getAspectRatioClass = () => {
     switch (aspectRatio) {
@@ -141,7 +136,7 @@ export const UploadCard = ({
         return "aspect-square";
       case "9:16":
       default:
-        return "aspect-[9/16]";
+        return "aspect-[4/5] sm:aspect-[9/16]";
     }
   };
 
@@ -155,16 +150,17 @@ export const UploadCard = ({
         className="hidden"
       />
 
-      <div className="mb-4 flex items-center gap-3">
-        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shadow-md shadow-primary/20">
+      {/* Step header */}
+      <div className="mb-3 flex items-center gap-3">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-semibold text-primary-foreground">
           {step}
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold text-foreground/90 leading-none">
+        </span>
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold leading-tight text-foreground">
             {label}
           </h3>
           {sublabel && (
-            <p className="text-sm text-muted-foreground font-medium mt-1">
+            <p className="mt-0.5 text-xs font-medium text-muted-foreground">
               {sublabel}
             </p>
           )}
@@ -172,56 +168,52 @@ export const UploadCard = ({
       </div>
 
       {!preview ? (
-        <div
+        <button
+          type="button"
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={handleClick}
           className={cn(
-            "rounded-3xl border-2 border-dashed transition-all duration-300 cursor-pointer relative overflow-hidden group",
+            "relative w-full overflow-hidden rounded-xl border-2 border-dashed transition-colors",
             getAspectRatioClass(),
             isDragging
-              ? "border-primary bg-primary/5 scale-[1.02]"
-              : "border-black/20 hover:border-primary/50 hover:bg-secondary/30 bg-card/30",
-            "dark:border-white/[0.28] dark:hover:border-white/40"
+              ? "border-primary bg-secondary"
+              : "border-border bg-muted/40 hover:border-primary/50 hover:bg-secondary/60"
           )}
         >
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-            <div
+          <span className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+            <span
               className={cn(
-                "w-20 h-20 rounded-3xl mb-6 flex items-center justify-center transition-all duration-300 shadow-sm",
-                "bg-background/80 backdrop-blur-sm border border-border/50 group-hover:scale-110 group-hover:shadow-md",
-                isDragging && "scale-110 shadow-lg"
+                "mb-4 flex h-12 w-12 items-center justify-center rounded-lg border border-border bg-background transition-colors",
+                isDragging && "border-primary"
               )}
             >
               <Icon
                 className={cn(
-                  "w-10 h-10 transition-colors duration-300",
-                  "text-muted-foreground/70 group-hover:text-primary",
-                  isDragging && "text-primary"
+                  "h-5 w-5 text-muted-foreground",
+                  (isDragging || undefined) && "text-primary"
                 )}
               />
-            </div>
+            </span>
 
-            <p className="text-lg font-medium text-foreground mb-2">
+            <span className="text-sm font-medium text-foreground">
               Drop {type} here
-            </p>
-            <p className="text-sm text-muted-foreground mb-6">
+            </span>
+            <span className="mt-1 text-xs text-muted-foreground">
               or click to browse
-            </p>
+            </span>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/50 text-xs font-medium text-muted-foreground border border-border/50">
-              <Upload className="w-3.5 h-3.5" />
-              {type === "image"
-                ? "PNG, JPG up to 10MB"
-                : "MP4, MOV up to 20MB"}
-            </div>
-          </div>
-        </div>
+            <span className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+              <Upload className="h-3 w-3" />
+              {type === "image" ? "PNG, JPG up to 10MB" : "MP4, MOV up to 20MB"}
+            </span>
+          </span>
+        </button>
       ) : (
         <div
           className={cn(
-            "relative rounded-3xl overflow-hidden bg-black/5 border border-border/20 group shadow-2xl shadow-black/5",
+            "group relative overflow-hidden rounded-xl border border-border bg-muted",
             getAspectRatioClass()
           )}
           onMouseEnter={() => type === "video" && handleVideoHover(true)}
@@ -231,82 +223,62 @@ export const UploadCard = ({
             <img
               src={preview}
               alt="Influencer portrait"
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
             />
           ) : hasPlayableFile ? (
             <video
               ref={videoRef}
               src={preview}
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
               loop
               muted
               playsInline
             />
           ) : (
             // Restored from IndexedDB: no File handle to stream, show the still
-            <div className="w-full h-full bg-black/10 flex items-center justify-center">
-              <Video className="w-10 h-10 text-muted-foreground" />
+            <div className="flex h-full w-full items-center justify-center">
+              <Video className="h-8 w-8 text-muted-foreground" />
             </div>
           )}
 
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-4">
+          {/* Hover actions - solid, not frosted */}
+          <div className="absolute inset-0 flex items-center justify-center gap-2 bg-foreground/60 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
             <Button
               variant="secondary"
               size="sm"
               onClick={handleClick}
-              className="h-10 px-4 rounded-xl bg-white/90 hover:bg-white text-black border-0 shadow-lg font-medium"
+              className="gap-1.5"
             >
-              <RefreshCw className="w-4 h-4 mr-2" />
+              <RefreshCw className="h-3.5 w-3.5" />
               Replace
             </Button>
             <Button
               variant="destructive"
               size="sm"
               onClick={handleRemove}
-              className="h-10 px-4 rounded-xl shadow-lg font-medium"
+              className="gap-1.5"
             >
-              <X className="w-4 h-4 mr-2" />
+              <X className="h-3.5 w-3.5" />
               Remove
             </Button>
           </div>
 
-          {/* Type badge and file info */}
-          <div className="absolute top-4 left-4 flex flex-col gap-2">
-            <div className="px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-md text-white text-xs font-medium border border-white/10 shadow-lg">
-              {type === "image" ? "Influencer Portrait" : "Performance Clip"}
-            </div>
+          {/* Type badge */}
+          <div className="absolute left-3 top-3">
+            <span className="rounded-md bg-foreground/80 px-2 py-1 text-[11px] font-medium text-background">
+              {type === "image" ? "Portrait" : "Performance"}
+            </span>
           </div>
 
           {sizeBytes !== null && (
-            <div className="absolute bottom-4 right-4">
-              <div className="px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-md text-white/90 text-xs font-mono border border-white/10 shadow-lg">
+            <div className="absolute bottom-3 right-3">
+              <span className="rounded-md bg-foreground/80 px-2 py-1 font-mono text-[11px] text-background">
                 {(sizeBytes / (1024 * 1024)).toFixed(2)} MB
-              </div>
+              </span>
             </div>
           )}
         </div>
       )}
-
-      {/* Sparkles Effect Below Card */}
-      <div className="relative w-full h-20 mt-2 overflow-hidden">
-        <div className="absolute left-1/2 -translate-x-1/2 top-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent h-[2px] w-3/4 blur-sm" />
-        <div className="absolute left-1/2 -translate-x-1/2 top-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent h-px w-3/4" />
-        <div className="absolute left-1/2 -translate-x-1/2 top-0 bg-gradient-to-r from-transparent via-primary/30 to-transparent h-[5px] w-1/4 blur-sm" />
-        <div className="absolute left-1/2 -translate-x-1/2 top-0 bg-gradient-to-r from-transparent via-primary/30 to-transparent h-px w-1/4" />
-
-        <div className="absolute inset-0 [mask-image:radial-gradient(ellipse_80%_100%_at_center_top,black_0%,transparent_70%)]">
-          <SparklesCore
-            background="transparent"
-            minSize={0.4}
-            maxSize={1}
-            particleDensity={800}
-            className="w-full h-full"
-            particleColor={theme === "dark" ? "#FFFFFF" : "#000000"}
-            speed={0.5}
-          />
-        </div>
-      </div>
     </div>
   );
 };

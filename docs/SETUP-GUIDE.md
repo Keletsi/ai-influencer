@@ -1,6 +1,6 @@
-# Motion Studio Pro - Complete Setup Guide
+﻿# AI-influencer - Complete Setup Guide
 
-This guide will walk you through setting up Motion Studio Pro with your own credentials, from cloning the repository to deploying it online.
+This guide will walk you through setting up AI-influencer with your own credentials, from cloning the repository to deploying it online.
 
 ## Table of Contents
 
@@ -62,11 +62,11 @@ This creates:
 2. Click "Create a new bucket"
 3. Create the first bucket:
    - **Name**: `uploads`
-   - **Public bucket**: ✅ Checked
+   - **Public bucket**: âœ… Checked
    - Click "Create bucket"
 4. Create the second bucket:
    - **Name**: `results`
-   - **Public bucket**: ✅ Checked
+   - **Public bucket**: âœ… Checked
    - Click "Create bucket"
 
 ### Step 5: Configure Storage Policies (Optional but Recommended)
@@ -162,9 +162,9 @@ node server.js
 
 You should see:
 ```
-🚀 Kling AI Proxy Server started
-📡 Local: http://localhost:3001
-🔒 API credentials: ✅ Configured
+ðŸš€ Kling AI Proxy Server started
+ðŸ“¡ Local: http://localhost:3001
+ðŸ”’ API credentials: âœ… Configured
 ```
 
 **Terminal 2** - Start the frontend:
@@ -175,7 +175,7 @@ npm run dev
 You should see:
 ```
 VITE v5.x.x ready in xxx ms
-➜ Local: http://localhost:5173/
+âžœ Local: http://localhost:5173/
 ```
 
 #### Option B: Vercel Dev (For testing serverless functions)
@@ -234,7 +234,7 @@ VITE_SUPABASE_ANON_KEY = your_anon_public_key_here
 
 1. Click "Deploy"
 2. Wait 2-3 minutes for the build to complete
-3. Your app is now live! 🎉
+3. Your app is now live! ðŸŽ‰
 
 ### Step 5: Update Supabase URLs
 
@@ -312,11 +312,12 @@ VITE_SUPABASE_ANON_KEY = your_anon_public_key_here
 
 ## Next Steps
 
-- ✅ Customize the branding and styling
-- ✅ Add your own logo
-- ✅ Configure email templates in Supabase
-- ✅ Set up analytics (optional)
-- ✅ Enable OAuth providers for easier sign-in
-- ✅ Add usage limits or subscription system
+- âœ… Customize the branding and styling
+- âœ… Add your own logo
+- âœ… Configure email templates in Supabase
+- âœ… Set up analytics (optional)
+- âœ… Enable OAuth providers for easier sign-in
+- âœ… Add usage limits or subscription system
 
-Congratulations! You now have your own Motion Studio Pro instance running! 🎬✨
+Congratulations! You now have your own AI-influencer instance running! ðŸŽ¬âœ¨
+

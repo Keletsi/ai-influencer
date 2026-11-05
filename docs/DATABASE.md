@@ -1,10 +1,10 @@
-# Database Schema Documentation
+﻿# Database Schema Documentation
 
-This document describes the database structure for Motion Studio Pro.
+This document describes the database structure for AI-influencer.
 
 ## Overview
 
-Motion Studio Pro uses **PostgreSQL** via Supabase with the following tables:
+AI-influencer uses **PostgreSQL** via Supabase with the following tables:
 
 - `auth.users` - Managed by Supabase Auth
 - `public.generations` - Video generation history
@@ -257,10 +257,10 @@ Stores user-uploaded reference images and motion videos.
 **Folder Structure:**
 ```
 uploads/
-  ├── {user_id}/
-  │   ├── {timestamp}-{random}.jpg
-  │   ├── {timestamp}-{random}.mp4
-  │   └── ...
+  â”œâ”€â”€ {user_id}/
+  â”‚   â”œâ”€â”€ {timestamp}-{random}.jpg
+  â”‚   â”œâ”€â”€ {timestamp}-{random}.mp4
+  â”‚   â””â”€â”€ ...
 ```
 
 ### `results` Bucket
@@ -371,3 +371,4 @@ supabase db push
 3. **Validate uploads** - Check file types and sizes before upload
 4. **Encrypt sensitive data** - Consider using Supabase Vault for API keys
 5. **Regular audits** - Review policies and user access regularly
+

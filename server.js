@@ -83,9 +83,12 @@ const MISSING_KEY_MESSAGE =
  * A key that is set but blank, whitespace-padded, quoted, or still the
  * placeholder is treated as missing. Forwarding `Bearer ` yields OpenRouter's
  * opaque "Missing Authentication header", which is very hard to debug.
+ *
+ * BYOK: a key supplied by the browser (`x-openrouter-key`) wins over the
+ * server's .env value, so a visitor can use their own credits without the
+ * operator exposing theirs. Both are sanitised the same way.
  */
-function readApiKey() {
-  const raw = process.env.OPENROUTER_API_KEY;
+function sanitizeKey(raw) {
   if (typeof raw !== 'string') return null;
 
   const key = raw.trim().replace(/^["']|["']$/g, '').trim();
@@ -95,18 +98,36 @@ function readApiKey() {
   return key;
 }
 
+function readApiKey(req) {
+  const fromHeader = sanitizeKey(req?.headers?.['x-openrouter-key']);
+  if (fromHeader) {
+    return { key: fromHeader, source: 'byok' };
+  }
+
+  const fromEnv = sanitizeKey(process.env.OPENROUTER_API_KEY);
+  if (fromEnv) {
+    return { key: fromEnv, source: 'server' };
+  }
+
+  return { key: null, source: 'none' };
+}
+
 const app = express();
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '80mb' }));
 
 /** Liveness + config state, so the UI can explain itself before generating. */
-app.get('/api/health', (_req, res) => {
+app.get('/api/health', (req, res) => {
+  const { key, source } = readApiKey(req);
+
   res.json({
     status: 'ok',
     service: 'ai-influencer',
     mode: isProduction ? 'production' : 'development',
-    configured: !!readApiKey(),
+    configured: !!key,
+    // 'byok' when the caller supplied their own key, 'server' when .env did
+    keySource: source,
     // When set, the driver video can be referenced by a real HTTPS URL
     publicUrl: PUBLIC_URL || null,
     canHostVideo: Boolean(PUBLIC_URL),
@@ -200,7 +221,7 @@ app.get('/api/uploads/video/:id', (req, res) => {
  * The client passes the upstream path as ?path=<path>.
  */
 app.use('/api/openrouter', async (req, res) => {
-  const apiKey = readApiKey();
+  const { key: apiKey } = readApiKey(req);
   if (!apiKey) {
     return res.status(500).json({
       error: 'API credentials not configured',
@@ -381,14 +402,20 @@ function listenWithFallback(preferred, attempts = 10) {
 }
 
 function printBanner() {
-  const key = readApiKey();
+  const { key, source } = readApiKey();
   console.log('');
   console.log(`  AI-influencer`);
   console.log(`  ------------------------------------------`);
   console.log(`  URL        http://localhost:${PORT}`);
   console.log(`  Mode       ${isProduction ? 'production' : 'development'}`);
   console.log(
-    `  API key    ${key ? 'configured' : 'MISSING - generation will fail'}`
+    `  API key    ${
+      key
+        ? source === 'byok'
+          ? 'supplied by the browser (BYOK)'
+          : 'configured in .env'
+        : 'MISSING - visitors can add their own key in Settings'
+    }`
   );
   console.log(`  Model      bytedance/seedance-2.0 (10s default)`);
   console.log(

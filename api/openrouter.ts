@@ -16,9 +16,11 @@ const PLACEHOLDER_KEYS = [
  * A key that is set but blank, whitespace-padded, quoted, or still the
  * placeholder must fail here. Forwarding `Bearer ` produces OpenRouter's
  * opaque "Missing Authentication header", which is far harder to diagnose.
+ *
+ * BYOK: a key supplied by the browser (`x-openrouter-key`) wins over the
+ * deployment's env var, so visitors can spend their own credits.
  */
-function getApiKey(): string | null {
-  const raw = process.env.OPENROUTER_API_KEY;
+function sanitizeKey(raw: unknown): string | null {
   if (typeof raw !== 'string') return null;
 
   // Undo accidental quoting and stray whitespace from .env editing
@@ -30,23 +32,30 @@ function getApiKey(): string | null {
   return key;
 }
 
+function readApiKey(req: VercelRequest): { key: string | null; source: 'byok' | 'server' | 'none' } {
+  const header = req.headers['x-openrouter-key'];
+  const fromHeader = sanitizeKey(Array.isArray(header) ? header[0] : header);
+  if (fromHeader) return { key: fromHeader, source: 'byok' };
+
+  const fromEnv = sanitizeKey(process.env.OPENROUTER_API_KEY);
+  if (fromEnv) return { key: fromEnv, source: 'server' };
+
+  return { key: null, source: 'none' };
+}
+
 function missingKeyMessage(): string {
   return (
-    'OPENROUTER_API_KEY is missing or invalid. Set it in your .env file ' +
-    '(no quotes, no surrounding spaces) and restart the server. Get a key ' +
-    'from https://openrouter.ai/keys'
+    'No OpenRouter API key found. Add your own key in Settings, or set ' +
+    'OPENROUTER_API_KEY in the environment. Get a key from ' +
+    'https://openrouter.ai/keys'
   );
 }
 
-function buildHeaders(): Record<string, string> {
+function buildHeaders(apiKey: string): Record<string, string> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    Authorization: `Bearer ${apiKey}`,
   };
-
-  const apiKey = getApiKey();
-  if (apiKey) {
-    headers['Authorization'] = `Bearer ${apiKey}`;
-  }
 
   // Optional attribution headers (recommended by OpenRouter)
   if (process.env.OPENROUTER_SITE_URL) {
@@ -65,7 +74,7 @@ function applyCors(res: VercelResponse): void {
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.setHeader(
     'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization'
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, X-OpenRouter-Key'
   );
 }
 
@@ -91,7 +100,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const apiKey = getApiKey();
+    const { key: apiKey } = readApiKey(req);
     if (!apiKey) {
       return res.status(500).json({
         error: 'API credentials not configured',
@@ -118,7 +127,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       queryString ? `?${queryString}` : ''
     }`;
 
-    const headers = buildHeaders();
+    const headers = buildHeaders(apiKey);
     let body: string | undefined;
 
     if (req.method !== 'GET' && req.method !== 'HEAD' && req.body) {

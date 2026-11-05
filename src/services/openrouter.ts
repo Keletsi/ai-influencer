@@ -7,6 +7,8 @@ import type {
 } from '@/types/openrouter';
 import type { ProgressCallback, UnifiedTaskResult } from '@/types/motion';
 import { extractVideoFrames } from './local-storage';
+import { apiKeyHeaders } from './api-key';
+import { recordRender, updateRender } from './history';
 
 const API_BASE_URL =
   import.meta.env.VITE_OPENROUTER_API_BASE_URL || '/api/openrouter';
@@ -369,13 +371,15 @@ export function buildMotionTransferPrompt(
 export interface OpenRouterHealth {
   /** The proxy answered at all. */
   reachable: boolean;
-  /** The proxy reports a usable API key. */
+  /** The proxy reports a usable API key (env or BYOK). */
   configured: boolean;
   /**
    * Whether the server can host the driver video at a public HTTPS URL,
    * which is required for a true `video_url` motion reference.
    */
   canHostVideo: boolean;
+  /** Which key answered the health check. */
+  keySource?: 'byok' | 'server' | 'none';
   /** User-facing explanation when something is wrong. */
   message?: string;
 }
@@ -388,10 +392,14 @@ export interface OpenRouterHealth {
  * key when the server simply is not running sends them the wrong way.
  */
 async function checkHealth(): Promise<OpenRouterHealth> {
-  let health: { configured?: boolean; canHostVideo?: boolean } | null = null;
+  let health: { configured?: boolean; canHostVideo?: boolean; keySource?: string } | null = null;
 
   try {
-    const response = await fetch('/api/health', { method: 'GET' });
+    const response = await fetch('/api/health', {
+      method: 'GET',
+      // Lets the server report "configured" for a browser-held BYOK key.
+      headers: apiKeyHeaders(),
+    });
     if (response.ok) {
       health = await response.json();
     }
@@ -411,9 +419,10 @@ async function checkHealth(): Promise<OpenRouterHealth> {
     reachable: true,
     configured,
     canHostVideo: !!health?.canHostVideo,
+    keySource: health?.keySource === 'byok' ? 'byok' : health?.keySource === 'server' ? 'server' : 'none',
     message: configured
       ? undefined
-      : 'OPENROUTER_API_KEY is missing or invalid. Set it in your .env file as a bare value (no quotes or spaces) and restart.',
+      : 'No OpenRouter API key found. Add your own key in Settings, or set OPENROUTER_API_KEY in .env and restart.',
   };
 }
 
@@ -438,7 +447,12 @@ class OpenRouterApiService {
 
   private async fetchProxyUrl(url: string, init?: RequestInit): Promise<Response> {
     try {
-      return await fetch(url, init);
+      return await fetch(url, {
+        ...init,
+        // BYOK: forward the browser-held key to our own proxy, which prefers
+        // it over OPENROUTER_API_KEY. Empty when the server key is in use.
+        headers: { ...apiKeyHeaders(), ...(init?.headers as Record<string, string>) },
+      });
     } catch (error) {
       const detail = error instanceof Error ? error.message : String(error);
       throw new Error(
@@ -953,6 +967,9 @@ class OpenRouterApiService {
 
     const status = toTaskStatus(job.status);
 
+    // Keep the main-page render list honest about a job recovered later.
+    updateRender(taskId, { status, model: job.model || model });
+
     if (status === 'completed') {
       const videoUrl = await this.resolveVideoUrl(job);
       return {
@@ -1080,6 +1097,17 @@ class OpenRouterApiService {
       // download fails after a billed render, the video can still be recovered.
       saveLastJob(started.taskId, started.model);
 
+      // Local index of this browser's renders, shown on the main page.
+      recordRender({
+        taskId: started.taskId,
+        model: started.model,
+        createdAt: Date.now(),
+        status: 'pending',
+        prompt: request.prompt,
+        aspectRatio: request.aspectRatio,
+        duration: request.duration,
+      });
+
       await onProgress?.(10, 'pending');
 
       const result = await this.waitForCompletion(
@@ -1090,6 +1118,8 @@ class OpenRouterApiService {
       );
 
       result.transferMode = started.transferMode;
+
+      updateRender(started.taskId, { status: result.status, model: result.model });
 
       if (result.status === 'completed' || attempt === 2) {
         return result;

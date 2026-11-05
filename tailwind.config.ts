@@ -14,7 +14,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Recursive', 'system-ui', 'sans-serif'],
+        // Same variable font, driven by its MONO axis via CSS below, so no
+        // extra font request is needed for code and job IDs.
+        mono: ['Recursive', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

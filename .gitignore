@@ -57,3 +57,8 @@ yarn.lock
 
 # Uploaded driver videos (runtime scratch)
 .uploads/
+
+# Local debug scratch dumps (API response captures, empty bodies)
+r.txt
+body.txt
+body2.txt

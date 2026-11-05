@@ -1,4 +1,4 @@
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles, Loader2, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -9,18 +9,20 @@ interface GenerateButtonProps {
   credits?: number;
 }
 
-export const GenerateButton = ({ 
-  onClick, 
-  isGenerating = false, 
+export const GenerateButton = ({
+  onClick,
+  isGenerating = false,
   disabled = false,
-  credits = 10 
+  credits = 10,
 }: GenerateButtonProps) => {
   return (
-    <div className="flex items-center gap-6">
-      <div className="flex flex-col items-end text-right">
-        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Estimated Cost</span>
-        <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+    <div className="flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:gap-5">
+      <div className="flex items-center justify-between gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2 sm:justify-start sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          Estimated cost
+        </span>
+        <span className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
+          <Coins className="h-3.5 w-3.5 text-primary" />
           {credits} credits
         </span>
       </div>
@@ -28,32 +30,23 @@ export const GenerateButton = ({
       <Button
         onClick={onClick}
         disabled={disabled || isGenerating}
+        size="lg"
         className={cn(
-          "relative h-14 px-8 text-base font-semibold rounded-2xl overflow-hidden transition-all duration-300 min-w-[280px]",
-          "bg-primary text-primary-foreground shadow-xl shadow-primary/20",
-          "hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/30 active:scale-[0.98]",
-          "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none",
+          "h-12 w-full gap-2.5 rounded-lg px-6 text-sm font-semibold sm:w-auto sm:min-w-[220px]",
           isGenerating && "cursor-wait"
         )}
       >
-        {/* Shimmer effect */}
-        {!disabled && !isGenerating && (
-          <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent z-0" />
+        {isGenerating ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Generating...
+          </>
+        ) : (
+          <>
+            <Sparkles className="h-4 w-4" />
+            Generate video
+          </>
         )}
-        
-        <span className="relative z-10 flex items-center justify-center gap-3">
-          {isGenerating ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Generating...</span>
-            </>
-          ) : (
-            <>
-              <Sparkles className="w-5 h-5 fill-current" />
-              <span>Generate Influencer Video</span>
-            </>
-          )}
-        </span>
       </Button>
     </div>
   );

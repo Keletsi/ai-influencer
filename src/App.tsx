@@ -11,7 +11,16 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+    {/*
+      The product is blue-and-white only, so the theme is locked to light.
+      next-themes stays because the sonner toaster reads from it.
+    */}
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      enableSystem={false}
+      forcedTheme="light"
+    >
       <TooltipProvider>
         <Toaster />
         <Sonner />

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import {
   Settings,
-  Sparkles,
   Download,
-  Maximize,
   CheckCircle2,
   Coins,
   History,
+  Film,
+  AlertCircle,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
@@ -24,7 +24,7 @@ interface SettingsPanelProps {
   generationStatus?: string;
   result?: UnifiedTaskResult;
   creditsUsed?: number;
-videoDuration?: number;
+  videoDuration?: number;
   transferMode?: TransferMode | null;
   savedJob?: SavedJob | null;
   isRecovering?: boolean;
@@ -35,7 +35,7 @@ videoDuration?: number;
 export const SettingsPanel = ({
   isGenerating = false,
   generationProgress = 0,
-  generationStatus = '',
+  generationStatus = "",
   result,
   creditsUsed,
   videoDuration,
@@ -112,343 +112,328 @@ export const SettingsPanel = ({
     }
   };
 
+  const fieldLabel = "text-xs font-semibold uppercase tracking-wide text-muted-foreground";
+
   return (
-    <div className="w-[360px] bg-card/80 backdrop-blur-xl flex flex-col h-screen shadow-2xl shadow-black/5 z-20 relative">
-      <Tabs defaultValue="settings" className="flex flex-col h-full overflow-hidden relative z-20">
-        <div className="px-6 pt-6 pb-2 shrink-0">
-          <TabsList className="w-full bg-secondary/50 p-1 rounded-xl grid grid-cols-2">
+    <aside className="rounded-xl border border-border bg-card">
+      <Tabs defaultValue="settings" className="flex flex-col">
+        <div className="border-b border-border px-4 py-3">
+          <TabsList className="grid w-full grid-cols-2 rounded-lg bg-muted p-1">
             <TabsTrigger
               value="settings"
-              className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all"
+              className="gap-1.5 rounded-md text-sm data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
             >
-              <Settings className="w-4 h-4 mr-2" />
+              <Settings className="h-3.5 w-3.5" />
               Settings
             </TabsTrigger>
             <TabsTrigger
               value="results"
-              className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all"
+              className="gap-1.5 rounded-md text-sm data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
             >
-              <Sparkles className="w-4 h-4 mr-2" />
+              <Film className="h-3.5 w-3.5" />
               Results
             </TabsTrigger>
           </TabsList>
         </div>
 
-        <div className="flex-1 overflow-hidden">
-          <TabsContent
-            value="settings"
-            className="h-full overflow-y-auto data-[state=active]:block m-0"
-          >
-            <div className="px-6 py-4 pb-20 space-y-6">
-              {/* Prompt */}
-              <div className="space-y-4">
-                <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider ml-1">
-                  Describe the shot
-                </Label>
-                <Textarea
-                  value={prompt}
-                  onChange={handlePromptChange}
-                  placeholder="e.g. the influencer turns to camera and smiles while the background stays still"
-                  className="bg-secondary/30 border-transparent focus:bg-background min-h-[100px] rounded-2xl resize-none text-sm p-4 transition-all"
-                />
-                <p className="text-xs text-muted-foreground px-1">
-                  Optional. Leave blank to get a faithful motion transfer.
-                </p>
-              </div>
+        <TabsContent value="settings" className="m-0">
+          <div className="space-y-7 px-5 py-5">
+            {/* Prompt */}
+            <div className="space-y-2">
+              <Label className={fieldLabel}>Describe the shot</Label>
+              <Textarea
+                value={prompt}
+                onChange={handlePromptChange}
+                placeholder="e.g. the influencer turns to camera and smiles while the background stays still"
+                className="min-h-[92px] resize-none rounded-lg border-border bg-background text-sm"
+              />
+              <p className="text-xs text-muted-foreground">
+                Optional. Leave blank for a faithful performance transfer.
+              </p>
+            </div>
 
-              {/* Video Duration Info */}
-              {videoDuration ? (
-                <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <div className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">
-                      Duration Detected
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Video length: {videoDuration}s
-                    </p>
-                  </div>
+            {/* Detected duration */}
+            {videoDuration ? (
+              <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-secondary px-3 py-2.5">
+                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-background">
+                  <span className="h-2 w-2 rounded-full bg-primary" />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">
+                    Duration detected
+                  </p>
+                  <p className="text-xs text-secondary-foreground">
+                    Clip length: {videoDuration}s
+                  </p>
                 </div>
-              ) : null}
+              </div>
+            ) : null}
 
-              {/* Quality / Resolution */}
-              <div className="space-y-4">
-                <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider ml-1">
-                  Quality
-                </Label>
-                <RadioGroup
-                  value={quality}
-                  onValueChange={handleQualityChange}
-                  className="grid grid-cols-2 gap-3"
-                >
+            {/* Quality */}
+            <div className="space-y-3">
+              <Label className={fieldLabel}>Resolution</Label>
+              <RadioGroup
+                value={quality}
+                onValueChange={handleQualityChange}
+                className="grid grid-cols-2 gap-2"
+              >
+                {[
+                  { value: "720p", title: "HD", sub: "720p" },
+                  { value: "1080p", title: "Full HD", sub: "1080p" },
+                ].map((option) => (
                   <label
+                    key={option.value}
                     className={cn(
-                      "flex flex-col items-center justify-center p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300",
-                      quality === "720p"
-                        ? "border-primary bg-primary/5 shadow-sm"
-                        : "border-transparent bg-secondary/50 hover:bg-secondary"
+                      "flex cursor-pointer flex-col items-center justify-center rounded-lg border px-3 py-3 transition-colors",
+                      quality === option.value
+                        ? "border-primary bg-secondary"
+                        : "border-border bg-background hover:border-primary/40"
                     )}
                   >
-                    <RadioGroupItem value="720p" className="sr-only" />
-                    <span className="text-lg font-bold mb-1">HD</span>
-                    <span className="text-xs font-medium text-muted-foreground">
-                      720p
+                    <RadioGroupItem value={option.value} className="sr-only" />
+                    <span className="text-sm font-semibold text-foreground">
+                      {option.title}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {option.sub}
                     </span>
                   </label>
+                ))}
+              </RadioGroup>
+            </div>
+
+            {/* Match mode */}
+            <div className="space-y-3">
+              <Label className={fieldLabel}>Match mode</Label>
+              <RadioGroup
+                value={matchMode}
+                onValueChange={handleMatchModeChange}
+                className="space-y-2"
+              >
+                {[
+                  {
+                    value: "structure",
+                    title: "Structure match",
+                    description: "Keeps the portrait's framing and composition",
+                  },
+                  {
+                    value: "motion",
+                    title: "Motion match",
+                    description: "Follows the full body movement and camera path",
+                  },
+                ].map((option) => (
                   <label
+                    key={option.value}
                     className={cn(
-                      "flex flex-col items-center justify-center p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300",
-                      quality === "1080p"
-                        ? "border-primary bg-primary/5 shadow-sm"
-                        : "border-transparent bg-secondary/50 hover:bg-secondary"
+                      "flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors",
+                      matchMode === option.value
+                        ? "border-primary bg-secondary"
+                        : "border-border bg-background hover:border-primary/40"
                     )}
                   >
-                    <RadioGroupItem value="1080p" className="sr-only" />
-                    <span className="text-lg font-bold mb-1">Full HD</span>
-                    <span className="text-xs font-medium text-muted-foreground">
-                      1080p
+                    <RadioGroupItem value={option.value} className="mt-0.5" />
+                    <span className="space-y-0.5">
+                      <span className="block text-sm font-medium text-foreground">
+                        {option.title}
+                      </span>
+                      <span className="block text-xs text-muted-foreground">
+                        {option.description}
+                      </span>
                     </span>
                   </label>
-                </RadioGroup>
-              </div>
+                ))}
+              </RadioGroup>
+            </div>
 
-              {/* Match Mode */}
-              <div className="space-y-4">
-                <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider ml-1">
-                  Match Mode
-                </Label>
-                <RadioGroup
-                  value={matchMode}
-                  onValueChange={handleMatchModeChange}
-                  className="space-y-3"
-                >
-                  <label
+            {/* Aspect ratio */}
+            <div className="space-y-3">
+              <Label className={fieldLabel}>Format</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { value: "9:16", label: "9:16", desc: "Portrait" },
+                  { value: "16:9", label: "16:9", desc: "Landscape" },
+                  { value: "1:1", label: "1:1", desc: "Square" },
+                ].map((ratio) => (
+                  <button
+                    key={ratio.value}
+                    type="button"
+                    onClick={() => handleAspectRatioChange(ratio.value)}
                     className={cn(
-                      "flex items-center gap-4 p-4 rounded-2xl border cursor-pointer transition-all duration-300",
-                      matchMode === "structure"
-                        ? "border-primary/50 bg-primary/5 shadow-sm"
-                        : "border-border/50 bg-secondary/20 hover:bg-secondary/40"
+                      "flex flex-col items-center justify-center rounded-lg border px-2 py-2.5 transition-colors",
+                      aspectRatio === ratio.value
+                        ? "border-primary bg-secondary text-secondary-foreground"
+                        : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground"
                     )}
                   >
-                    <RadioGroupItem value="structure" className="mt-0.5" />
-                    <div className="space-y-1">
-                      <p className="text-sm font-semibold">Structure Match</p>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        Preserves the influencer's framing and composition
-                      </p>
-                    </div>
-                  </label>
-                  <label
-                    className={cn(
-                      "flex items-center gap-4 p-4 rounded-2xl border cursor-pointer transition-all duration-300",
-                      matchMode === "motion"
-                        ? "border-primary/50 bg-primary/5 shadow-sm"
-                        : "border-border/50 bg-secondary/20 hover:bg-secondary/40"
-                    )}
-                  >
-                    <RadioGroupItem value="motion" className="mt-0.5" />
-                    <div className="space-y-1">
-                      <p className="text-sm font-semibold">Motion Match</p>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        Warps the influencer to follow camera movement
-                      </p>
-                    </div>
-                  </label>
-                </RadioGroup>
-              </div>
-
-              {/* Aspect Ratio */}
-              <div className="space-y-4">
-                <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider ml-1">
-                  Format
-                </Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { value: "16:9", label: "16:9", desc: "Landscape" },
-                    { value: "9:16", label: "9:16", desc: "Portrait" },
-                    { value: "1:1", label: "1:1", desc: "Square" },
-                  ].map((ratio) => (
-                    <button
-                      key={ratio.value}
-                      onClick={() => handleAspectRatioChange(ratio.value)}
-                      className={cn(
-                        "flex flex-col items-center justify-center p-3 rounded-xl border transition-all duration-200",
-                        aspectRatio === ratio.value
-                          ? "border-primary bg-primary/5 text-primary shadow-sm"
-                          : "border-transparent bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                      )}
-                    >
-                      <span className="text-sm font-bold">{ratio.label}</span>
-                      <span className="text-[10px] opacity-70">{ratio.desc}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Motion Strength */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between ml-1">
-                  <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                    Motion Strength
-                  </Label>
-                  <span className="text-sm font-mono bg-secondary px-2 py-0.5 rounded-md text-foreground">
-                    {motionStrength[0]}%
-                  </span>
-                </div>
-                <div className="px-2">
-                  <Slider
-                    value={motionStrength}
-                    onValueChange={handleMotionStrengthChange}
-                    max={100}
-                    step={1}
-                    className="[&_[role=slider]]:h-5 [&_[role=slider]]:w-5 [&_[role=slider]]:bg-white [&_[role=slider]]:border-2 [&_[role=slider]]:border-primary [&_[role=slider]]:shadow-md"
-                  />
-                </div>
-              </div>
-
-              {/* Negative Prompt */}
-              <div className="space-y-4">
-                <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider ml-1">
-                  Negative Prompt
-                </Label>
-                <Textarea
-                  value={negativePrompt}
-                  onChange={handleNegativePromptChange}
-                  placeholder="e.g. blur, distortion, low quality..."
-                  className="bg-secondary/30 border-transparent focus:bg-background min-h-[100px] rounded-2xl resize-none text-sm p-4 transition-all"
-                />
+                    <span className="text-sm font-semibold">{ratio.label}</span>
+                    <span className="text-[10px] uppercase tracking-wide">
+                      {ratio.desc}
+                    </span>
+                  </button>
+                ))}
               </div>
             </div>
-          </TabsContent>
 
-          <TabsContent
-            value="results"
-            className="h-full overflow-y-auto data-[state=active]:flex flex-col p-4 m-0"
-          >
+            {/* Motion strength */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className={fieldLabel}>Motion strength</Label>
+                <span className="rounded-md border border-border bg-muted px-2 py-0.5 font-mono text-xs text-foreground">
+                  {motionStrength[0]}%
+                </span>
+              </div>
+              <Slider
+                value={motionStrength}
+                onValueChange={handleMotionStrengthChange}
+                max={100}
+                step={1}
+              />
+              <p className="text-xs text-muted-foreground">
+                Higher values copy the performance more aggressively.
+              </p>
+            </div>
+
+            {/* Negative prompt */}
+            <div className="space-y-2">
+              <Label className={fieldLabel}>Negative prompt</Label>
+              <Textarea
+                value={negativePrompt}
+                onChange={handleNegativePromptChange}
+                placeholder="e.g. blur, distortion, low quality..."
+                className="min-h-[80px] resize-none rounded-lg border-border bg-background text-sm"
+              />
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="results" className="m-0">
+          <div className="flex flex-col gap-4 px-5 py-5">
             {isGenerating ? (
-              <div className="flex-1 flex flex-col">
-                <div className="aspect-video rounded-lg skeleton-shimmer mb-4" />
+              <div className="flex flex-col gap-4">
+                <div className="skeleton-shimmer aspect-video w-full rounded-lg" />
 
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center justify-between">
-                    <div className="h-4 w-3/4 rounded skeleton-shimmer" />
-                    <span className="text-sm font-medium text-primary">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium text-foreground">Rendering</span>
+                    <span className="font-mono text-primary">
                       {generationProgress}%
                     </span>
                   </div>
-                  <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
                     <div
-                      className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-300"
+                      className="h-full rounded-full bg-primary transition-all duration-300"
                       style={{ width: `${generationProgress}%` }}
                     />
                   </div>
-                </div>
-
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-                  <span>{generationStatus || "Generating your video..."}</span>
+                  <p className="text-xs text-muted-foreground">
+                    {generationStatus || "Generating your video..."}
+                  </p>
                 </div>
               </div>
             ) : result?.status === "completed" && result.result ? (
-              <div className="flex-1 flex flex-col">
-                <div className="aspect-video rounded-lg overflow-hidden bg-black mb-4">
+              <div className="flex flex-col gap-4">
+                <div className="aspect-video overflow-hidden rounded-lg border border-border bg-foreground">
                   <video
                     src={result.result.videoUrl}
                     controls
                     playsInline
-                    className="w-full h-full"
+                    className="h-full w-full"
                   />
                 </div>
 
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
-                    <p className="text-sm font-medium">Generation Complete!</p>
-                  </div>
+                <div className="space-y-2">
+                  <p className="flex items-center gap-2 text-sm font-medium text-foreground">
+                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                    Generation complete
+                  </p>
                   <p className="text-xs text-muted-foreground">
-                    Duration: {result.result.duration}s • Created:{" "}
+                    {result.result.duration}s •{" "}
                     {new Date(result.createdAt).toLocaleString()}
                   </p>
-                  <p className="text-xs text-muted-foreground font-mono">
+                  <p className="truncate font-mono text-xs text-muted-foreground">
                     {result.model}
                   </p>
+
                   {transferMode === "frame-reference" && (
-                    <p className="text-xs text-amber-600 dark:text-amber-400">
+                    <p className="rounded-md border border-amber-300 bg-amber-50 px-2.5 py-1.5 text-xs text-amber-800">
                       Motion approximated from sampled frames. Set PUBLIC_URL and
-                      expose the server over HTTPS for exact transfer.
+                      serve over HTTPS for exact transfer.
                     </p>
                   )}
+
                   {(creditsUsed !== undefined ||
                     result.result.creditsUsed !== undefined) && (
-                    <div className="flex items-center gap-2 text-xs">
-                      <Coins className="w-3 h-3 text-amber-500" />
-                      <span className="text-muted-foreground">
-                        Cost:{" "}
-                        <span className="font-medium text-foreground">
-                          ${(creditsUsed ?? result.result.creditsUsed)?.toFixed(4)}
-                        </span>
+                    <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <Coins className="h-3 w-3 text-primary" />
+                      Cost:{" "}
+                      <span className="font-medium text-foreground">
+                        ${(creditsUsed ?? result.result.creditsUsed)?.toFixed(4)}
                       </span>
-                    </div>
+                    </p>
                   )}
                 </div>
 
-                <div className="flex gap-2 pt-4 border-t border-border">
+                <div className="flex gap-2 border-t border-border pt-4">
                   <Button
-                    variant="secondary"
-                    className="flex-1 gap-2"
+                    variant="outline"
+                    className="flex-1 gap-1.5"
                     onClick={handleDownload}
                   >
-                    <Download className="w-4 h-4" />
+                    <Download className="h-4 w-4" />
                     Download
                   </Button>
-                  <Button variant="secondary" className="flex-1 gap-2" disabled>
-                    <Maximize className="w-4 h-4" />
-                    Upscale
-                  </Button>
                 </div>
+              </div>
+            ) : result?.status === "failed" ? (
+              <div className="flex flex-col items-center gap-2 py-10 text-center">
+                <AlertCircle className="h-6 w-6 text-destructive" />
+                <p className="text-sm font-medium text-foreground">
+                  Generation failed
+                </p>
+                <p className="max-w-xs text-xs text-muted-foreground">
+                  {result.error || "OpenRouter did not return a video."}
+                </p>
+                {savedJob && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-2 gap-1.5"
+                    disabled={isRecovering}
+                    onClick={onRecover}
+                  >
+                    <History className="h-3.5 w-3.5" />
+                    {isRecovering ? "Recovering..." : "Recover last video"}
+                  </Button>
+                )}
               </div>
             ) : (
-              <div className="flex-1 flex flex-col">
-                <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
-                  <div className="w-16 h-16 rounded-2xl bg-muted/50 flex items-center justify-center mb-4">
-                    <Sparkles className="w-8 h-8 text-muted-foreground" />
-                  </div>
-                  <p className="text-sm font-medium mb-1">No results yet</p>
-                  <p className="text-xs text-muted-foreground">
-                    Add an influencer portrait and a performance clip, then click
-                    Generate
-                  </p>
-                  {savedJob && !isGenerating && (
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      className="mt-4 gap-2"
-                      disabled={isRecovering}
-                      onClick={onRecover}
-                    >
-                      <History className="w-4 h-4" />
-                      {isRecovering ? "Recovering..." : "Recover last video"}
-                    </Button>
-                  )}
-                </div>
-
-                <div className="flex gap-2 pt-4 border-t border-border">
-                  <Button variant="secondary" className="flex-1 gap-2" disabled>
-                    <Download className="w-4 h-4" />
-                    Download
+              <div className="flex flex-col items-center gap-2 py-10 text-center">
+                <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-secondary">
+                  <Film className="h-6 w-6 text-primary" />
+                </span>
+                <p className="text-sm font-medium text-foreground">
+                  No render yet
+                </p>
+                <p className="max-w-xs text-xs text-muted-foreground">
+                  Add a portrait and a performance clip, then press Generate.
+                </p>
+                {savedJob && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-2 gap-1.5"
+                    disabled={isRecovering}
+                    onClick={onRecover}
+                  >
+                    <History className="h-3.5 w-3.5" />
+                    {isRecovering ? "Recovering..." : "Recover last video"}
                   </Button>
-                  <Button variant="secondary" className="flex-1 gap-2" disabled>
-                    <Maximize className="w-4 h-4" />
-                    Upscale
-                  </Button>
-                </div>
+                )}
               </div>
             )}
-          </TabsContent>
-        </div>
+          </div>
+        </TabsContent>
       </Tabs>
-    </div>
+    </aside>
   );
 };
