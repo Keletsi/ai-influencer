@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { KeyRound, Sparkles, Upload, Wand2, ArrowRight } from "lucide-react";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { AppFooter } from "@/components/layout/AppFooter";
+import { HeroBackdrop, SampleShowcase } from "@/components/layout/HeroMedia";
 import { Workspace } from "@/components/studio/Workspace";
 import { SettingsPanel } from "@/components/studio/SettingsPanel";
 import { RecentRenders } from "@/components/studio/RecentRenders";
@@ -419,44 +420,49 @@ const Index = () => {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="border-b border-border bg-secondary/40">
-          <div className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-            <div className="max-w-2xl">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-background px-3 py-1 text-xs font-medium text-secondary-foreground">
-                <Sparkles className="h-3.5 w-3.5 text-primary" />
-                Virtual influencer studio
-              </span>
+        <section className="relative overflow-hidden border-b border-border bg-secondary/40">
+          <HeroBackdrop />
+          <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
+            <div className="grid items-center gap-10 lg:grid-cols-2">
+              <div className="max-w-2xl">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-background px-3 py-1 text-xs font-medium text-secondary-foreground">
+                  <Sparkles className="h-3.5 w-3.5 text-primary" />
+                  Virtual influencer studio
+                </span>
 
-              <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-                Put your AI influencer
-                <span className="text-primary"> on camera</span>
-              </h1>
+                <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+                  Put your AI influencer
+                  <span className="text-primary"> on camera</span>
+                </h1>
 
-              <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                Upload a portrait and a performance clip. AI-influencer copies the
-                movement, timing and camera work onto your character and returns a
-                share-ready video.
-              </p>
+                <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+                  Upload a portrait and a performance clip. AI-influencer copies the
+                  movement, timing and camera work onto your character and returns a
+                  share-ready video.
+                </p>
 
-              <div className="mt-6 flex flex-wrap items-center gap-3">
-                <Button size="lg" className="gap-2" asChild>
-                  <a href="#compose">
-                    Start a render
-                    <ArrowRight className="h-4 w-4" />
-                  </a>
-                </Button>
-                <Button size="lg" variant="outline" className="gap-2" onClick={() => setSettingsOpen(true)}>
-                  <KeyRound className="h-4 w-4" />
-                  {keyConfigured ? "Manage API key" : "Add your API key"}
-                </Button>
+                <div className="mt-6 flex flex-wrap items-center gap-3">
+                  <Button size="lg" className="gap-2" asChild>
+                    <a href="#compose">
+                      Start a render
+                      <ArrowRight className="h-4 w-4" />
+                    </a>
+                  </Button>
+                  <Button size="lg" variant="outline" className="gap-2" onClick={() => setSettingsOpen(true)}>
+                    <KeyRound className="h-4 w-4" />
+                    {keyConfigured ? "Manage API key" : "Add your API key"}
+                  </Button>
+                </div>
+
+                {!keyConfigured && serverOnline !== false && (
+                  <p className="mt-4 text-sm text-amber-800">
+                    No OpenRouter key detected. Add your own key to generate on your
+                    own credits — it stays in this browser.
+                  </p>
+                )}
               </div>
 
-              {!keyConfigured && serverOnline !== false && (
-                <p className="mt-4 text-sm text-amber-800">
-                  No OpenRouter key detected. Add your own key to generate on your
-                  own credits — it stays in this browser.
-                </p>
-              )}
+              <SampleShowcase />
             </div>
           </div>
         </section>
